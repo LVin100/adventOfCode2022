@@ -1060,9 +1060,9 @@ class Directory {
       // console.log('/'pesa:'+ this.totalWeight)
     });
     this.subDirectories.forEach((directory) => {
-      this.totalWeight += directory.calculateTotalWeight();
+      this.totalWeight += parseInt(directory.calculateTotalWeight());
       if(this.totalWeight<100000){
-        console.log(this.totalWeight)
+        // console.log(this.totalWeight)
     }
     });
     // console.log("la directory " + this.name + "/ pesa: " + this.totalWeight);
@@ -1085,7 +1085,7 @@ class Directory {
     this.subDirectories.add(new Directory(name, parentDir));
   }
   addFile(name, weight) {
-    this.files.add(new File(name, weight));
+    this.files.add(new File(name, parseInt(weight)));
   }
   getBack() {
     // console.log(this.parentDir)
@@ -1101,6 +1101,13 @@ class Directory {
       }
     }
     return dir;
+  }
+
+  getWeight() {
+    this.subDirectories.forEach(dir => {
+        dir.getWeight();
+    })
+    arrayOfWeight.push(this.totalWeight);
   }
 }
 /* const i = new file('i',584)
@@ -1146,7 +1153,6 @@ parsedInput.forEach((cmdLine) => {
     if (creator) {
       if (cmdLine[0] === "dir") {
         // console.log(currentDirectory)
-
         currentDirectory.addSubDirectories(cmdLine[1], currentDirectory);
       } else {
         currentDirectory.addFile(cmdLine[1], cmdLine[0]);
@@ -1155,5 +1161,16 @@ parsedInput.forEach((cmdLine) => {
   }
 });
 
-console.log(fileSystem.calculateTotalWeight());
-console.log(minW)
+fileSystem.calculateTotalWeight()
+console.log(minW) //risultato primo problema
+
+let arrayOfWeight =[];
+//ordino i pesi delle directory e controllo ad occhio perchè sono pigro ma per ogni peso dovrei sottrarre il peso da togliere e prendere quello con la differenza minore.
+
+console.log(arrayOfWeight.sort(function(a, b){return a-b}));
+
+console.log(70000000-fileSystem.totalWeight)
+
+// la memoria che necessito di liberare 27.413.292
+fileSystem.getWeight();
+//risposta 2948823
