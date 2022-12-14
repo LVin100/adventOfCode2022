@@ -1,4 +1,4 @@
-let inputAOCC = `L 1
+let inputAOC = `L 1
 D 1
 U 2
 R 1
@@ -1998,7 +1998,7 @@ R 9
 L 2
 D 16
 L 4`;
-let inputAOC = `R 5
+let inputAOCC = `R 5
 U 8
 L 8
 D 3
@@ -2182,8 +2182,13 @@ function isHFarFromT(currentCoordsT, currentCoordsH) {
 }
 
 function movingT(diffX, diffY) {
+    //perchè funziona? perchè nelle prime 4 condizioni non ho messo gli uguale
   if (diffX < 0 && diffY < 0) {
     return [1, 1];
+  } else if (diffX < 0 && diffY > 0) {
+    return [1, -1];
+  } else if (diffX > 0 && diffY < 0) {
+    return [-1, 1];
   } else if (diffX > 0 && diffY > 0) {
     return [-1, -1];
   } else if (diffX === 0 && diffY === -2) {
@@ -2194,10 +2199,6 @@ function movingT(diffX, diffY) {
     return [0, -1];
   } else if (diffX === 2 && diffY === 0) {
     return [-1, 0];
-  } else if (diffX < 0 && diffY > 0) {
-    return [1, -1];
-  } else if (diffX > 0 && diffY < 0) {
-    return [-1, 1];
   } else {
     console.log("ERROR!!! DIFFX:" + diffX + "; DIFFY:" + diffY);
   }
