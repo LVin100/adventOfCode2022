@@ -1,4 +1,4 @@
-let inputAOC = `L 1
+let inputAOCC = `L 1
 D 1
 U 2
 R 1
@@ -1998,7 +1998,14 @@ R 9
 L 2
 D 16
 L 4`;
-
+let inputAOC = `R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20`;
 inputAOC = inputAOC.replaceAll('"', "");
 const parsedInput = inputAOC.split("\n");
 let headMoves = [];
@@ -2096,17 +2103,16 @@ console.log(tCoords.size);
 //Seconda parte:
 
 var tCoords2 = new Set();
-tCoords2.add('x100y100');
+tCoords2.add("x0y0");
 
 let nodes = [];
-for(let i =0; i<9; i++){
-    nodes[i] = [100,100];
+for (let i = 0; i < 9; i++) {
+  nodes[i] = [0, 0];
 }
-newCoordsH2 = [100,100]
-newCoordsT2= [100,100];
-prevCoordsH2 = [100,100];
-prevCoordsT2 = [100,100];
-
+newCoordsH2 = [0, 0];
+newCoordsT2 = [0, 0];
+prevCoordsH2 = [0, 0];
+prevCoordsT2 = [0, 0];
 
 // const follow(H, T) {
 
@@ -2114,24 +2120,26 @@ prevCoordsT2 = [100,100];
 // }
 
 headMoves.forEach((move) => {
+  console.log("-------------INIZIO----------");
 
-    // console.log('-------------INIZIO----------')
   for (let i = 0; i < parseInt(move[1]); i++) {
     newCoordsH2 = returnHCoords(move[0], prevCoordsH2);
-    // console.log('H: '+newCoordsH2+'------------');
+    console.log("H: " + newCoordsH2 + " ------------");
     nodes[0] = returnTCoords(nodes[0], newCoordsH2, 0);
+
     for (let n = 1; n < 9; n++) {
       nodes[n] = returnTCoords(nodes[n], nodes[n - 1], n);
     }
-    newCoordsT2 = returnTCoords(prevCoordsT2, nodes[8], 'T');
-    prevCoordsH2 = newCoordsH2;
-  }
-//   console.log('-------------FINE----------')
 
+    newCoordsT2 = returnTCoords(prevCoordsT2, nodes[8], "T");
+
+    prevCoordsH2 = newCoordsH2;
+    prevCoordsT2 = newCoordsT2;
+  }
 });
 
 function returnHCoords(direction, prevHCoords) {
-  let currentHCoords = prevHCoords;
+  let currentHCoords;
   switch (direction) {
     case "L": //left
       currentHCoords = [prevHCoords[0] - 1, prevHCoords[1]];
@@ -2149,23 +2157,23 @@ function returnHCoords(direction, prevHCoords) {
 }
 
 function returnTCoords(currentCoordsT, currentCoordsH, index) {
-    let tMove = isHFarFromT(currentCoordsT, currentCoordsH);
-    // console.log(tMove)
-    if(tMove){
-        currentCoordsT[0] += tMove[0];
-        currentCoordsT[1] += tMove[1];
-    }
-    // console.log(index+': '+currentCoordsT);
-    if(index === 'T'){
-        tCoords2.add(`x${currentCoordsT[0]}y${currentCoordsT[1]}`);
-    }
-    return currentCoordsT
+  let tMove = isHFarFromT(currentCoordsT, currentCoordsH);
+  // console.log(tMove)
+  if (tMove) {
+    currentCoordsT[0] += tMove[0];
+    currentCoordsT[1] += tMove[1];
+  }
+  console.log(index + ": " + currentCoordsT);
+  if (index === "T") {
+    tCoords2.add(`x${currentCoordsT[0]}y${currentCoordsT[1]}`);
+  }
+  return currentCoordsT;
 }
 
 function isHFarFromT(currentCoordsT, currentCoordsH) {
   let diffX = currentCoordsT[0] - currentCoordsH[0];
   let diffY = currentCoordsT[1] - currentCoordsH[1];
-// console.log('sono in HFar'+diffY+' '+diffY)
+  // console.log('sono in HFar'+diffY+' '+diffY)
   if (Math.abs(diffX) <= 1 && Math.abs(diffY) <= 1) {
     return false;
   } else {
@@ -2174,14 +2182,10 @@ function isHFarFromT(currentCoordsT, currentCoordsH) {
 }
 
 function movingT(diffX, diffY) {
-  if ((diffX < 0 && diffY < 0) || (diffX === -2 && diffY === -2 )) {
+  if (diffX < 0 && diffY < 0) {
     return [1, 1];
-  } else if ((diffX > 0 && diffY > 0) || (diffX === 2 && diffY === 2)) {
+  } else if (diffX > 0 && diffY > 0) {
     return [-1, -1];
-  } else if ((diffX === -2 && diffY === 1) || (diffX === -1 && diffY === 2) || (diffX === -2 && diffY === 2)) {
-    return [1, -1];
-  } else if ((diffX === 2 && diffY === -1) || (diffX === 1 && diffY === -2) || (diffX === 2 && diffY === -2)) {
-    return [-1, 1];
   } else if (diffX === 0 && diffY === -2) {
     return [0, 1];
   } else if (diffX === -2 && diffY === 0) {
@@ -2190,9 +2194,14 @@ function movingT(diffX, diffY) {
     return [0, -1];
   } else if (diffX === 2 && diffY === 0) {
     return [-1, 0];
+  } else if (diffX < 0 && diffY > 0) {
+    return [1, -1];
+  } else if (diffX > 0 && diffY < 0) {
+    return [-1, 1];
   } else {
-    console.log("ERROR!!! DIFFX:"+diffX+'; DIFFY:'+diffY)
+    console.log("ERROR!!! DIFFX:" + diffX + "; DIFFY:" + diffY);
   }
 }
 
-console.log(tCoords2.size)
+console.log(tCoords2.size);
+//2347 non è la risposta
