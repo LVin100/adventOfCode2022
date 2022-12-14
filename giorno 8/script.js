@@ -1,6 +1,6 @@
 // https://adventofcode.com/2022/day/8
 
-let inputAOC = JSON.stringify(`023322201321333021030055115233032255002015013044155106103011355435025324002515233340032023013101000
+let inputAOC = `023322201321333021030055115233032255002015013044155106103011355435025324002515233340032023013101000
 333001114104040220402023231114145321226614100664520643140442646451222053211251540001413110202310311
 001122230342102202311114141015535535515054203105023201320052153606250133240404425023031241331132300
 200333324214423413533144232012440022651463612352410034332230305463511214140020132330411142212122132
@@ -98,8 +98,7 @@ let inputAOC = JSON.stringify(`0233222013213330210300551152330322550020150130441
 022314333231043300404453132012064266633361244266541036223442060142103261113425041124401240222232000
 311003213421304332112132501310051205416305264342531341103003055416252025531115042105141422320032103
 133213004320332415205534404040532521244601552314401414553622300634114003055144015221303103000233300
-121313142330141112135522531401154344545521012501566652210433310564254034403545252414443110303020313`
-);
+121313142330141112135522531401154344545521012501566652210433310564254034403545252414443110303020313`;
 // let inputAOC = JSON.stringify(
 // `30373
 // 25512
@@ -107,7 +106,7 @@ let inputAOC = JSON.stringify(`0233222013213330210300551152330322550020150130441
 // 33549
 // 35390`)
 inputAOC = inputAOC.replaceAll('"', "");
-var treeRows = inputAOC.split("\\n");
+var treeRows = inputAOC.split("\n");
 
 //analisi del problema
 //vedo tutti gli alberi nei bordi: 98*4, la griglia è quadrata lato 99
@@ -122,66 +121,146 @@ let maxCoord = 99;
 
 //funzioni
 function isThereBiggerTreeTop(tx, ty, tval) {
-    
-    for (let x = minCoord; x < tx; x++) {
-      if (parseInt(treeRows[x][ty]) >= parseInt(tval)) {
-        return true;
-      }
-    }
-    return false;
-  }
   
-  function isThereBiggerTreeBottom(tx, ty, tval) {
-    
-    for (let x = tx; x < maxCoord; x++) {
-        console.log('x_'+x+' y_'+ty)
-      if (parseInt(treeRows[x][ty]) >= parseInt(tval)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  
-  function isThereBiggerTreeLeft(tx, ty, tval) {
-    
-    for (let y = minCoord; y < ty; y++) {
-      if (parseInt(treeRows[tx][y]) >= parseInt(tval)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  
-  function isThereBiggerTreeRight(tx, ty, tval) {
-    
-    for (let y = ty; y < maxCoord; y++) {
-      if (parseInt(treeRows[tx][y]) >= parseInt(tval)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  
-  function checkController(tx, ty, tval) {
-    if (
-      !isThereBiggerTreeBottom(tx, ty, tval) ||
-      !isThereBiggerTreeTop(tx, ty, tval) ||
-      !isThereBiggerTreeRight(tx, ty, tval) ||
-      !isThereBiggerTreeLeft(tx, ty, tval)
-    ) {
-      counter++;
-      console.log("x: " + tx + "; y: " + ty + "; tval= " + treeRows[tx][ty]);
-      // console.log('x: '+tx+', ty: '+ty+'; è visibile da almeno una parte.')
-      // console.log('t:'+ isThereBiggerTreeTop(tx, ty, tval)+'; b: '+isThereBiggerTreeBottom(tx, ty, tval)+'; l: '+isThereBiggerTreeLeft(tx, ty, tval)+'; r: '+isThereBiggerTreeRight(tx, ty, tval));
+  for (let x = minCoord; x < tx; x++) {
+    if (parseInt(treeRows[x][ty]) >= parseInt(tval)) {
+      return true;
     }
   }
+  return false;
+}
 
-//risoluzione del problema
+function isThereBiggerTreeBottom(tx, ty, tval) {
+  for (let x = tx + 1; x < maxCoord; x++) {
+    if (parseInt(treeRows[x][ty]) >= parseInt(tval)) {
+      return true;
+    }
+  }
+  return false;
+}
 
-for (let x = 1; x < maxCoord-1; x++) {
-  for (let y = 1; y < maxCoord-1; y++) {
+function isThereBiggerTreeLeft(tx, ty, tval) {
+  for (let y = minCoord; y < ty; y++) {
+    if (parseInt(treeRows[tx][y]) >= parseInt(tval)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isThereBiggerTreeRight(tx, ty, tval) {
+  for (let y = ty + 1; y < maxCoord; y++) {
+    if (parseInt(treeRows[tx][y]) >= parseInt(tval)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkController(tx, ty, tval) {
+  if (
+    !isThereBiggerTreeBottom(tx, ty, tval) ||
+    !isThereBiggerTreeTop(tx, ty, tval) ||
+    !isThereBiggerTreeRight(tx, ty, tval) ||
+    !isThereBiggerTreeLeft(tx, ty, tval)
+  ) {
+    counter++;
+    // console.log("x: " + tx + "; y: " + ty + "; tval= " + treeRows[tx][ty]);
+  }
+}
+
+//soluzione parte 1
+
+for (let x = 1; x < maxCoord - 1; x++) {
+  for (let y = 1; y < maxCoord - 1; y++) {
     checkController(x, y, treeRows[x][y]);
   }
 }
 
 console.log(counter);
+
+//parte due
+
+function howManyTreesTop(tx, ty, tval) {
+  let countingTrees = 0;
+  for (let x = tx + -1; x >= minCoord; x--) {
+    if (parseInt(treeRows[x][ty]) < parseInt(tval)) {
+      countingTrees++;
+    } else {
+      countingTrees++;
+      break;
+    }
+  }
+  return countingTrees;
+}
+
+function howManyTreesBottom(tx, ty, tval) {
+  let countingTrees = 0;
+  for (let x = tx + 1; x < maxCoord; x++) {
+    if (parseInt(treeRows[x][ty]) < parseInt(tval)) {
+      countingTrees++;
+    } else {
+      countingTrees++;
+      break;
+    }
+  }
+  return countingTrees;
+}
+
+function howManyTreesLeft(tx, ty, tval) {
+  let countingTrees = 0;
+  for (let y = ty-1; y >= minCoord; y--) {
+    if (parseInt(treeRows[tx][y]) < parseInt(tval)) {
+      countingTrees++;
+    } else {
+      countingTrees++;
+      break;
+    }
+  }
+  return countingTrees;
+}
+
+function howManyTreesRight(tx, ty, tval) {
+  let countingTrees = 0;
+  for (let y = ty+1; y < maxCoord; y++) {
+    // console.log('tx: '+tx+'; ty: '+ty+ '||'+ y)
+
+    if (parseInt(treeRows[tx][y]) < parseInt(tval)) {
+      countingTrees++;
+    } else {
+      countingTrees++;
+      break;
+    }
+  }
+  // console.log(countingTrees)
+  return countingTrees;
+}
+
+function scenicScoreCalculator(tx, ty, tval) {
+  let scenicScore = (
+    howManyTreesBottom(tx, ty, tval) *
+    howManyTreesTop(tx, ty, tval) *
+    howManyTreesRight(tx, ty, tval) *
+    howManyTreesLeft(tx, ty, tval)
+  );
+  return scenicScore;
+}
+
+let oldScenicScore = 0;
+let newScenicScore = 0;
+for (let x = 1; x < maxCoord - 1; x++) {
+  
+  for (let y = 1; y < maxCoord - 1; y++) {
+    newScenicScore = scenicScoreCalculator(x, y, treeRows[x][y]);
+// console.log(newScenicScore)
+
+    if(newScenicScore > oldScenicScore){
+      oldScenicScore = newScenicScore;
+    }
+  }
+}
+
+console.log(oldScenicScore);
+
+//risposta non è 255.360
+//non è neanche 278.400
