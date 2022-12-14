@@ -2012,7 +2012,6 @@ var hCoords = new Set();
 var tCoords = new Set();
 hCoords.add("x100y100");
 tCoords.add("x100y100");
-console.log(hCoords);
 let prevCoordsH = [100, 100];
 let prevCoordsT = [100, 100];
 headMoves.forEach((move) => {
@@ -2048,13 +2047,11 @@ function returnHCoords(move, prevHCoords) {
 
 function returnTCoords(currentTCoords, currentHCoords, direction) {
   let tMove = isHFarFromT(currentHCoords, currentTCoords, direction);
-  console.log(tMove);
   if (tMove) {
     currentTCoords[0] += tMove[0];
     currentTCoords[1] += tMove[1];
 
     tCoords.add(`x${currentTCoords[0]}y${currentTCoords[1]}`);
-    console.log(tCoords.size)
     return currentTCoords;
   } else {
     return currentTCoords;
@@ -2066,11 +2063,9 @@ function isHFarFromT(coordsH, coordsT, direction) {
   let hy = coordsH[1];
   let tx = coordsT[0];
   let ty = coordsT[1];
-    // console.log('tx:'+tx+'; ty: '+ty+'; hx: '+hx+'; hy: '+hy);
   let diffX = tx - hx;
   let diffY = ty - hy;
 
-console.log(diffX+' e '+diffY)
   if (Math.abs(diffX) <= 1 && Math.abs(diffY) <= 1) {
     return false;
   } else {
@@ -2079,15 +2074,6 @@ console.log(diffX+' e '+diffY)
 }
 
 function movingT(diffX, diffY, direction) {
-  //entro in questa funzione solo quando le differenze assolute sono maggiori di 2
-  // let hx = coordsH[0];
-  // let hy = coordsH[1];
-  // let tx = coordsT[0];
-  // let ty = coordsT[1];
-
-  // let diffX = tx-hx;
-  // let diffY = ty-hy;
-// console.log(diffX+' e '+diffY)
   if (diffX < 0 && diffY < 0) {
     return [1, 1];
   } else if (diffX > 0 && diffY > 0) {
