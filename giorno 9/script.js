@@ -2007,22 +2007,21 @@ parsedInput.forEach((el, index) => {
 });
 
 console.log(headMoves[0]);
-//ipotizzo che si cominci da (0,0), e creerò un Set() di coppie di coordinate.
-var hCoords = new Set();
+//ipotizzo che si cominci da (100,100), e creerò un Set() di coppie di coordinate.
 var tCoords = new Set();
-hCoords.add("x100y100");
 tCoords.add("x100y100");
 let prevCoordsH = [100, 100];
 let prevCoordsT = [100, 100];
+
 headMoves.forEach((move) => {
   for (let i = 0; i < parseInt(move[1]); i++) {
-    newCoordsH = returnHCoords(move, prevCoordsH);
-    newCoordsT = returnTCoords(prevCoordsT, newCoordsH, move[0]);
+    newCoordsH = returnHCoords_primaParte(move, prevCoordsH);
+    newCoordsT = returnTCoords_primaParte(prevCoordsT, newCoordsH, move[0]);
     prevCoordsH = newCoordsH;
   }
 });
 
-function returnHCoords(move, prevHCoords) {
+function returnHCoords_primaParte(move, prevHCoords) {
   let direction = move[0];
   let currentHCoords = prevHCoords;
   switch (direction) {
@@ -2032,21 +2031,17 @@ function returnHCoords(move, prevHCoords) {
     case "R": //Right
       currentHCoords = [prevHCoords[0] + 1, prevHCoords[1]];
       return currentHCoords;
-      break;
     case "D": //Down
       currentHCoords = [prevHCoords[0], prevHCoords[1] - 1];
       return currentHCoords;
-      break;
     case "U": //Up
       currentHCoords = [prevHCoords[0], prevHCoords[1] + 1];
-
       return currentHCoords;
-      break;
   }
 }
 
-function returnTCoords(currentTCoords, currentHCoords, direction) {
-  let tMove = isHFarFromT(currentHCoords, currentTCoords, direction);
+function returnTCoords_primaParte(currentTCoords, currentHCoords, direction) {
+  let tMove = isHFarFromT_primaParte(currentHCoords, currentTCoords, direction);
   if (tMove) {
     currentTCoords[0] += tMove[0];
     currentTCoords[1] += tMove[1];
@@ -2058,7 +2053,7 @@ function returnTCoords(currentTCoords, currentHCoords, direction) {
   }
 }
 
-function isHFarFromT(coordsH, coordsT, direction) {
+function isHFarFromT_primaParte(coordsH, coordsT, direction) {
   let hx = coordsH[0];
   let hy = coordsH[1];
   let tx = coordsT[0];
@@ -2069,11 +2064,11 @@ function isHFarFromT(coordsH, coordsT, direction) {
   if (Math.abs(diffX) <= 1 && Math.abs(diffY) <= 1) {
     return false;
   } else {
-    return movingT(diffX, diffY, direction);
+    return movingT_primaParte(diffX, diffY, direction);
   }
 }
 
-function movingT(diffX, diffY, direction) {
+function movingT_primaParte(diffX, diffY, direction) {
   if (diffX < 0 && diffY < 0) {
     return [1, 1];
   } else if (diffX > 0 && diffY > 0) {
@@ -2083,19 +2078,121 @@ function movingT(diffX, diffY, direction) {
   } else if ((diffX === 2 && diffY === -1) || (diffX === 1 && diffY === -2)) {
     return [-1, 1];
   } else {
-    switch(direction){
-        case 'L':
-            return [-1,0];
-        case 'R':
-            return [1,0];
-        case 'U':
-            return [0,+1];
-        case 'D':
-            return [0,-1];
+    switch (direction) {
+      case "L":
+        return [-1, 0];
+      case "R":
+        return [1, 0];
+      case "U":
+        return [0, +1];
+      case "D":
+        return [0, -1];
     }
   }
 }
 
 console.log(tCoords.size);
 
-//no 1701
+//Seconda parte:
+
+var tCoords2 = new Set();
+tCoords2.add('x100y100');
+
+let nodes = [];
+for(let i =0; i<9; i++){
+    nodes[i] = [100,100];
+}
+newCoordsH2 = [100,100]
+newCoordsT2= [100,100];
+prevCoordsH2 = [100,100];
+prevCoordsT2 = [100,100];
+
+
+// const follow(H, T) {
+
+//         //  nuove coordinate di T
+// }
+
+headMoves.forEach((move) => {
+
+    // console.log('-------------INIZIO----------')
+  for (let i = 0; i < parseInt(move[1]); i++) {
+    newCoordsH2 = returnHCoords(move[0], prevCoordsH2);
+    // console.log('H: '+newCoordsH2+'------------');
+    nodes[0] = returnTCoords(nodes[0], newCoordsH2, 0);
+    for (let n = 1; n < 9; n++) {
+      nodes[n] = returnTCoords(nodes[n], nodes[n - 1], n);
+    }
+    newCoordsT2 = returnTCoords(prevCoordsT2, nodes[8], 'T');
+    prevCoordsH2 = newCoordsH2;
+  }
+//   console.log('-------------FINE----------')
+
+});
+
+function returnHCoords(direction, prevHCoords) {
+  let currentHCoords = prevHCoords;
+  switch (direction) {
+    case "L": //left
+      currentHCoords = [prevHCoords[0] - 1, prevHCoords[1]];
+      return currentHCoords;
+    case "R": //Right
+      currentHCoords = [prevHCoords[0] + 1, prevHCoords[1]];
+      return currentHCoords;
+    case "D": //Down
+      currentHCoords = [prevHCoords[0], prevHCoords[1] - 1];
+      return currentHCoords;
+    case "U": //Up
+      currentHCoords = [prevHCoords[0], prevHCoords[1] + 1];
+      return currentHCoords;
+  }
+}
+
+function returnTCoords(currentCoordsT, currentCoordsH, index) {
+    let tMove = isHFarFromT(currentCoordsT, currentCoordsH);
+    // console.log(tMove)
+    if(tMove){
+        currentCoordsT[0] += tMove[0];
+        currentCoordsT[1] += tMove[1];
+    }
+    // console.log(index+': '+currentCoordsT);
+    if(index === 'T'){
+        tCoords2.add(`x${currentCoordsT[0]}y${currentCoordsT[1]}`);
+    }
+    return currentCoordsT
+}
+
+function isHFarFromT(currentCoordsT, currentCoordsH) {
+  let diffX = currentCoordsT[0] - currentCoordsH[0];
+  let diffY = currentCoordsT[1] - currentCoordsH[1];
+// console.log('sono in HFar'+diffY+' '+diffY)
+  if (Math.abs(diffX) <= 1 && Math.abs(diffY) <= 1) {
+    return false;
+  } else {
+    return movingT(diffX, diffY);
+  }
+}
+
+function movingT(diffX, diffY) {
+  if ((diffX < 0 && diffY < 0) || (diffX === -2 && diffY === -2 )) {
+    return [1, 1];
+  } else if ((diffX > 0 && diffY > 0) || (diffX === 2 && diffY === 2)) {
+    return [-1, -1];
+  } else if ((diffX === -2 && diffY === 1) || (diffX === -1 && diffY === 2) || (diffX === -2 && diffY === 2)) {
+    return [1, -1];
+  } else if ((diffX === 2 && diffY === -1) || (diffX === 1 && diffY === -2) || (diffX === 2 && diffY === -2)) {
+    return [-1, 1];
+  } else if (diffX === 0 && diffY === -2) {
+    return [0, 1];
+  } else if (diffX === -2 && diffY === 0) {
+    return [1, 0];
+  } else if (diffX === 0 && diffY === 2) {
+    return [0, -1];
+  } else if (diffX === 2 && diffY === 0) {
+    return [-1, 0];
+  } else {
+    console.log("ERROR!!! DIFFX:"+diffX+'; DIFFY:'+diffY)
+  }
+}
+
+console.log(tCoords2.size)
