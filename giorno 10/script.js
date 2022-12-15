@@ -142,7 +142,7 @@ noop
 noop
 noop
 noop`;
-let inputAOCTest = `addx 15
+let inputAOCT = `addx 15
 addx -11
 addx 6
 addx -3
@@ -296,34 +296,99 @@ parsedInput.forEach((el, index) => {
   instructions[index][1] = parseInt(instructions[index][1]);
 });
 
-console.log(instructions);
+// console.log(instructions);
 let x = 1;
 let cycle = 0;
-let cycleToStamp = [20,60,100,140,180,220];
+let cycleToStamp = [20, 60, 100, 140, 180, 220];
 let sum = 0;
-instructions.forEach(inst => {
-
-    if(inst[0] === 'noop'){
+instructions.forEach((inst) => {
+  if (inst[0] === "noop") {
+    cycle++;
+    sum = isCycle20(cycle, sum, x);
+  } else if (inst[0] === "addx") {
+    for (let i = 0; i < 2; i++) {
       cycle++;
       sum = isCycle20(cycle, sum, x);
-    } else if(inst[0] === 'addx'){
-      for(let i = 0; i<2; i++){
-        cycle++
-        sum = isCycle20(cycle, sum, x);
-      }
-      // console.log(x+' '+inst[1]);
-      x += inst[1];
     }
-    
-})
+    // console.log(x+' '+inst[1]);
+    x += inst[1];
+  }
+});
 
-function isCycle20(cycle, sum, x){
-
-  if(cycleToStamp.includes(cycle)){
-    signalStrength = cycle*x;
-      sum += signalStrength;
-      console.log('al '+cycle+' ciclo la somma è: '+sum);
+function isCycle20(cycle, sum, x) {
+  if (cycleToStamp.includes(cycle)) {
+    signalStrength = cycle * x;
+    sum += signalStrength;
+    // console.log('al '+cycle+' ciclo la somma è: '+sum);
   }
   return sum;
 }
-console.log(sum);
+// console.log(sum);
+
+//parte due
+/*
+  x corrisponde alla prima posizione dello script, quindi x<=cycle <= x+2.
+  io so che la griglia è 40*6, quindi penso basti modificare la stampa a video e mantenere un unico array di 240 valori su cui fare tutti i calcoli. 
+*/
+
+let crt = [];
+let screenDimension = [40, 6];
+cycleToStamp = [40];
+
+x = 0;
+cycle = 0;
+
+instructions.forEach((inst) => {
+  if (inst[0] === "noop") {
+    crt[cycle] = isSpriteInPixelDrawn(x, cycle);
+    cycle++;
+    if (cycleToStamp.includes(cycle)) {
+      console.log(crt.slice(0, 40));
+      crt = [];
+      cycle = 0;
+    }
+  } else if (inst[0] === "addx") {
+    for (let i = 0; i < 2; i++) {
+      crt[cycle] = isSpriteInPixelDrawn(x, cycle);
+      cycle++;
+      if (cycleToStamp.includes(cycle)) {
+        console.log(crt.slice(0, 40));
+        crt = [];
+        cycle = 0;
+      }
+    }
+    // console.log(x+' '+inst[1]);
+    if (cycleToStamp.includes(cycle)) {
+      console.log(crt.slice(0, 40));
+      crt = [];
+      cycle = 0;
+    }
+    x += inst[1];
+  }
+});
+
+function isSpriteInPixelDrawn(x, cycle) {
+  // console.log(x+' ; disegnando: '+cycle);
+  if (x <= cycle && cycle <= x + 2) {
+    return "#";
+  }
+  return ".";
+}
+
+// function drowing(screenDimension, crt) {
+//   for (let y = 0; y < screenDimension[1]; y++) {
+//     console.log(
+//       y * screenDimension[0] +
+//         "; " +
+//         parseInt(y * screenDimension[0] + screenDimension[0])
+//     );
+//     console.log(
+//       crt.slice(
+//         parseInt(y * screenDimension[0]),
+//         parseInt(y * screenDimension[0] + screenDimension[0])
+//       )
+//     );
+//   }
+// }
+// console.log(crt);
+// drowing(screenDimension, crt);
