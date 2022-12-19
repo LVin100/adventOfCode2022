@@ -1,4 +1,4 @@
-let inputAOCT = `Monkey 0:
+let inputAOC = `Monkey 0:
 Starting items: 75, 75, 98, 97, 79, 97, 64
 Operation: new = old * 13
 Test: divisible by 19
@@ -54,7 +54,7 @@ Test: divisible by 7
   If true: throw to monkey 3
   If false: throw to monkey 6`;
 
-let inputAOC = `Monkey 0:
+let inputAOCT= `Monkey 0:
 Starting items: 79, 98
 Operation: new = old * 19
 Test: divisible by 23
@@ -112,15 +112,17 @@ class Monkey {
   newPriority(old) {
     let op5 = this.operation[5] === "old" ? old : this.operation[5];
     //TODO: rimuovere assolutamente eval
-    let newItem = eval(`${old} ${this.operation[4]} ${op5}`);
+    let item = eval(`${old} ${this.operation[4]} ${op5}`);
+    let newItem = Math.floor(item/3)
     // console.log(newItem);
     return newItem;
   }
 
   testing(item) {
     // console.log(item + ' % '+ this.test + ' = '+ ((item % this.test) === 0));
+    // console.log(item)
     if (item % this.test === 0) {
-      console.log('lanciando a scimmia '+this.firstCond)
+      // console.log('lanciando a scimmia '+this.firstCond)
       return this.firstCond;
     }
     // console.log('lanciando a scimmia '+this.secondCond)
@@ -143,28 +145,29 @@ parsedInput.forEach((el, index) => {
 });
 
 // console.log(monkeys[0])
-// for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 20; i++) {
   monkeys.forEach((monkey, index) => {
-    console.log('############################## scimmia '+index);
+    // console.log('############################## scimmia '+index);
     [...monkey.items].forEach((item) => {
-      console.log('--------- INIZIO')
-      console.log(monkey.items)
+      // console.log('--------- INIZIO')
+      // console.log(monkey.items)
 
       let res = monkey.throwItem(item);
       let index = res[0];
       let newPriority = res[1];
-      console.log( monkeys[`${index}`].items);
+      // console.log( monkeys[`${index}`].items);
       monkeys[`${index}`].items.push(newPriority);
-      console.log(monkey.items)
-      console.log( monkeys[`${index}`].items);
+      // console.log(monkey.items)
+      // console.log( monkeys[`${index}`].items);
 
     });
 
   });
-// }
+}
 // console.log(monkeys);
-// monkeys.forEach(monkey =>{
-//   console.log(monkey.items)
-// })
+// console.log('QQQQQQQQQQQQQQQQQQQQQQQQQ');
+monkeys.forEach(monkey =>{
+  console.log(monkey.isActive)
+})
 
-//54145 to low
+//66124 è la soluzione!!!
